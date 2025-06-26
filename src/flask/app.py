@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 # Define the path to your pickled model file
-MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../models/')
+MODEL_PATH = ''
 
 MODEL_FILES = {
     'Random Forest': 'best_forest_model.pkl',
@@ -24,6 +24,7 @@ def load_models():
     Loads the scikit-learn model from the specified pickle file.
     This function will be called once when the Flask app starts.
     """
+    
     for save_name, model_name in MODEL_FILES.items():
         if os.path.exists(MODEL_PATH + model_name):
             try:
@@ -34,7 +35,7 @@ def load_models():
                 print(f"Error loading model '{save_name}' from {model_name}: {e}")
                 # Do not stop the app, but log the error for this specific model
         else:
-            print(f"Model file for '{save_name}' not found at {model_name}. Skipping.")
+            print(f"Model file for '{save_name}' not found at {MODEL_PATH + model_name}. Skipping.")
     
     if not loaded_models:
         print("WARNING: No models were loaded successfully. Prediction endpoint will fail.")
@@ -135,7 +136,7 @@ def get_model_performace():
         return jsonify({"error": "Missing 'model_name' field in request body."}), 400
 
     # load MODEL_PATH + tunded_model_performance.csv
-    performance_file = os.path.join(MODEL_PATH, MODEL_STATS)
+    performance_file = MODEL_PATH + MODEL_STATS
     if not os.path.exists(performance_file):
         return jsonify({"error": f"Model performace file '{MODEL_STATS}' not found."}), 404
     try:

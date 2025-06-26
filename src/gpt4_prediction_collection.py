@@ -24,7 +24,7 @@ for idx, row in df.iterrows():
         if col not in ['id', 'dataset', 'heart_disease_prediction', 'sick']
     ])
 
-    prompt = f"Without searching on the internt answer with a yes or no (y/n), does this patient have heart disease? {patient_string}"
+    prompt = f"Without searching on the internet answer with a yes or no (y/n), does this patient have heart disease? {patient_string}"
 
     try:
         response = client.chat.completions.create(

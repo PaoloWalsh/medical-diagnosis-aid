@@ -2,6 +2,7 @@ import pickle
 from flask import Flask, request, jsonify
 import numpy as np
 import os
+import onnxruntime as ort
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -10,10 +11,8 @@ app = Flask(__name__)
 MODEL_PATH = ''
 
 MODEL_FILES = {
-    'Random Forest': 'best_forest_model.pkl',
-    'K-Nearest Neighbors': 'best_knn_model.pkl',
-    'Logistic Regression': 'best_log_model.pkl',
-    'SVC': 'best_svc_model.pkl',
+    'K-Nearest Neighbors': 'best_knn_model.onnx',
+    'Logistic Regression': 'best_log_model.onnx',
 }
 MODEL_STATS = 'tuned_model_performance.csv'
 # Global variable to store the loaded model
@@ -29,9 +28,9 @@ def load_models():
         if os.path.exists(MODEL_PATH + model_name):
             try:
                 with open(MODEL_PATH + model_name, 'rb') as file:
-                    loaded_models[save_name] = pickle.load(file)
+                    loaded_models[save_name] = ort.InferenceSession(MODEL_PATH + model_name)
                 print(f"Model '{save_name}' successfully loaded from {model_name}")
-            except (pickle.UnpicklingError, FileNotFoundError, IOError) as e:
+            except (FileNotFoundError, IOError) as e:
                 print(f"Error loading model '{save_name}' from {model_name}: {e}")
                 # Do not stop the app, but log the error for this specific model
         else:
@@ -98,17 +97,26 @@ def predict():
         print(input_array)
 
         # Make prediction using the chosen model
-        predictions = chosen_model.predict(input_array).tolist() # Convert NumPy array to Python list for JSON
-        probabilities = None
+        # Use ONNX Runtime to run inference
+        input_name = chosen_model.get_inputs()[0].name
+        label_name = chosen_model.get_outputs()[0].name
+        predictions = chosen_model.run([label_name], {input_name: input_array.astype(np.float32)})[0]
+        probabilities = None  # ONNX models may not always provide probabilities
         
-        probabilities = chosen_model.predict_proba(input_array).tolist()
+        probabilities = None  # ONNX models may not always provide probabilities
+        try:
+            # Check if the model provides probabilities
+            prob_output_name = chosen_model.get_outputs()[1].name  # Assuming the second output is probabilities
+            probabilities = chosen_model.run([prob_output_name], {input_name: input_array.astype(np.float32)})[0]
+        except IndexError:
+            # If the model does not have a second output for probabilities, skip
+            probabilities = None
         response = {
             "model_used": model_name,
-            "predictions": predictions
+            "predictions": predictions.tolist()  # Convert ndarray to list
         }
         if probabilities is not None:
-            response["probabilities"] = probabilities
-
+            response["probabilities"] = probabilities  # Convert ndarray to list
         return jsonify(response), 200
 
     except ValueError as ve:

@@ -25,7 +25,7 @@ medical-diagnosis-aid/
 ├── notebooks/              # Jupyter Notebooks per l'analisi, l'addestramento e la valutazione
 ├── plots/                  # Grafici e visualizzazioni salvate
 ├── src/
-│   ├── data_acquisition/   # Script per il download e la preparazione dei dati
+│   ├── data_acquisition/   # Script per l'acquisizione delle predizioni del LLM e della studentessa
 │   ├── flask/              # Codice sorgente dell'applicazione Flask (API)
 │   └── streamlit/          # Codice sorgente della dashboard interattiva (UI)
 ├── docker-compose.yml      # File per orchestrare i container (API e UI)
@@ -143,3 +143,25 @@ curl -X POST http://localhost:5001/predict \
 ## 📓 Notebooks di Analisi
 
 La cartella `notebooks/` contiene i Jupyter Notebooks che documentano l'intero processo di analisi, addestramento e valutazione dei modelli. Puoi esplorarli per comprendere in dettaglio ogni fase del progetto.
+
+Per eseguire i notebook localmente, è consigliabile creare un ambiente virtuale Python per gestire le dipendenze.
+
+### Setup per i Notebook
+
+1.  **Crea e attiva un ambiente virtuale:**
+    Dal terminale, nella directory principale del progetto:
+    ```sh
+    python3 -m venv venv
+    source venv/bin/activate  # Su Windows usa: venv\Scripts\activate
+    ```
+
+2.  **Installa le dipendenze:**
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+3.  **Avvia Jupyter Lab:**
+    ```sh
+    jupyter notebook
+    ```
+    Questo aprirà un'interfaccia nel tuo browser. Naviga fino alla cartella `notebooks/` per aprire ed eseguire i file `.ipynb`.

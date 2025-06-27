@@ -5,14 +5,13 @@ FROM python:3.11-slim-buster
 WORKDIR /app
 
 # Install any needed packages specified in requirements.txt
-COPY flask/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code into the container
-COPY flask/app.py .
-COPY models/*.pkl .
-COPY models/*.onnx .
-COPY models/*.csv .
+COPY app.py .
+# COPY ../models/*.onnx .
+# COPY ../models/*.csv .
 # Expose the port on which the Flask app will run
 EXPOSE 5000
 

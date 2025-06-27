@@ -8,7 +8,7 @@ import onnxruntime as ort
 app = Flask(__name__)
 
 # Define the path to your pickled model file
-MODEL_PATH = ''
+MODEL_PATH = 'models/'
 
 MODEL_FILES = {
     'K-Nearest Neighbors': 'best_knn_model.onnx',

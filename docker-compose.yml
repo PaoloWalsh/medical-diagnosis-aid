@@ -1,29 +1,29 @@
 services:
-  # Define the Flask application service
+  # Define the Flask application service (Backend)
   flask_app:
-    # Use the current directory as the build context for the Dockerfile
-    build: ./src/
-    # Map port 5001 on the host to port 5000 in the container
+    build:
+      context: ./src/flask
+      dockerfile: Dockerfile
     ports:
       - "5001:5000"
-    
-    restart: always 
+    restart: always
+    # Aggiungi un volume per i modelli se vuoi montarli esternamente o persisterli.
+    # Questo è spesso più comodo che copiarli nell'immagine.
+    # Se decidi di usarlo, assicurati che app.py cerchi i modelli in /app/models.
+    volumes:
+      - ./models:/app/models # Questo monterà la tua cartella 'models' del progetto nella cartella '/app/models' del container
 
-    streamlit_app:
-      # Build the image from the Dockerfile in the current directory (or a specified path)
-      # Assumiamo che il Dockerfile per Streamlit sia in ./src/streamlit/Dockerfile
-      build:
-        context: ./src/streamlit
-        dockerfile: Dockerfile # Se il Dockerfile è chiamato Dockerfile.streamlit, cambialo qui
-      # Map port 8501 on the host to port 8501 in the container (Streamlit default)
-      ports:
-        - "8501:8501"
-      # Ensure Streamlit app starts only after Flask backend is ready
-      depends_on:
-        - flask_app
-      restart: always
-      # Il backend Flask è disponibile all'interno della rete Docker con il nome del servizio 'flask_app'
-      # Quindi, FLASK_API_URL nel frontend dovrebbe puntare a http://flask_app:5000
-      # La porta 5000 è quella interna del container Flask, non quella mappata sull'host (5001)
-      environment:
-        - FLASK_API_URL=http://flask_app:5000
+  # Define the Streamlit application service (Frontend)
+  streamlit_app:
+    build:
+      context: ./src/streamlit
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - flask_app # Assicura che il container Flask sia avviato prima di Streamlit
+    restart: always
+    # Il backend Flask è disponibile all'interno della rete Docker con il nome del servizio 'flask_app'.
+    # La porta 5000 è quella interna del container Flask, non quella mappata sull'host (5001).
+    environment:
+      - FLASK_API_URL=http://flask_app:5000

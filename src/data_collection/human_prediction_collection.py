@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load your dataset
-input_file = '../data/heart_disease_clean.csv'
+input_file = '../../data/heart_disease_clean.csv'
 df = pd.read_csv(input_file)
 
 # Collect human labels here
@@ -37,7 +37,7 @@ if human_labels:
     labeled_df = df.iloc[:len(human_labels)].copy()
     labeled_df['human_prediction'] = human_labels
 
-    output_file = '../data/heart_disease_human_prediction.csv'
+    output_file = '../../data/heart_disease_human_prediction.csv'
     labeled_df.to_csv(output_file, index=False)
 
     print(f"\n✅ Done. {len(labeled_df)} rows saved to '{output_file}'.")

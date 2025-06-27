@@ -13,30 +13,20 @@ FLASK_API_URL = os.getenv("FLASK_API_URL", "http://localhost:5001")
 
 def get_available_models():
     """
-    Recupera i modelli disponibili dall'endpoint home della Flask API.
-    Nota: L'endpoint home restituisce una stringa HTML, quindi dobbiamo parsare per trovare i nomi dei modelli.
-    Un endpoint '/models_list' dedicato nella tua API Flask sarebbe più robusto e consigliato.
+    Recupera i modelli disponibili dall'endpoint /models della Flask API.
     """
     try:
-        response = requests.get(FLASK_API_URL + '/')
-        response.raise_for_status() # Lancia un'eccezione per codici di stato HTTP errati (4xx o 5xx)
-        # Parsare la risposta per ottenere i nomi dei modelli
-        html_content = response.text
-        if "Available models:" in html_content:
-            parts = html_content.split("Available models:")[1].split("<br>")[0]
-            model_names_str = parts.strip()
-            if model_names_str and model_names_str != 'None':
-                return [m.strip() for m in model_names_str.split(',')]
-            else:
-                return []
+        response = requests.post(f"{FLASK_API_URL}/model_list", timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        return data.get("available_models", [])
+    except requests.RequestException as e:
+        st.warning(f"Errore nella richiesta all'API: {e}")
         return []
-    except requests.exceptions.ConnectionError:
-        st.error(f"Errore di connessione all'API Flask. Assicurati che l'API sia in esecuzione su {FLASK_API_URL}")
+    except ValueError:
+        st.warning("Risposta API non è un JSON valido.")
         return []
-    except Exception as e:
-        st.error(f"Errore nel recupero dei modelli disponibili: {e}")
-        return []
-
+    
 def predict_data(model_name, data):
     """
     Invia i dati all'endpoint /predict della Flask API per ottenere una previsione.

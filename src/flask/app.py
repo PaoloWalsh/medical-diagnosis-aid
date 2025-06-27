@@ -166,6 +166,17 @@ def get_model_performace():
         return jsonify({"error": f"Error reading model performance file: {e}"}), 500
     
 
+    
+@app.route('/model_list', methods=['POST'])
+def return_model_list():
+    """
+    API endpoint to return the list of available models.
+    """
+    if not loaded_models:
+        return jsonify({"error": "No models are loaded. Server misconfiguration."}), 500
+
+    return jsonify({"available_models": list(loaded_models.keys())}), 200
+
 
 # --- Main execution block ---
 if __name__ == '__main__':

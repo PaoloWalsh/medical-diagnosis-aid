@@ -54,6 +54,7 @@ def home():
         f"Available models: {', '.join(available_models) if available_models else 'None'}<br>"
         f"Use /predict to make predictions, specifying 'model_name' in your JSON request."
     )
+
 @app.route('/predict', methods=['POST'])
 def predict():
     """

@@ -1,0 +1,10 @@
+services:
+  # Define the Flask application service
+  flask_app:
+    # Use the current directory as the build context for the Dockerfile
+    build: ./src/
+    # Map port 5001 on the host to port 5000 in the container
+    ports:
+      - "5001:5000"
+    
+    restart: always 

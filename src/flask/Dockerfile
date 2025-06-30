@@ -15,4 +15,4 @@ EXPOSE 5000
 
 # Run the Flask application when the container starts
 # The debug flag is set to False for production deployment
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]

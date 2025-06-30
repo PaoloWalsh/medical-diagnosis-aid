@@ -41,6 +41,9 @@ def load_models():
     else:
         print(f"Successfully loaded models: {list(loaded_models.keys())}")
 
+# Ensure models are loaded when the app starts
+load_models()
+
 # --- Flask Routes ---
 
 @app.route('/')
@@ -48,6 +51,8 @@ def home():
     """
     Basic home route to confirm the server is running.
     """
+   # if not loaded_models:
+   #     load_models()  # Ensure models are loaded when accessing home
     available_models = list(loaded_models.keys())
     return (
         f"Flask multi-model prediction backend is running!<br>"
@@ -67,6 +72,8 @@ def predict():
         "data": [[feature1_val1, feature2_val1, ...]]
     }
     """
+    ##if not loaded_models:
+    #    load_models()  # Ensure models are loaded when accessing home
     if not loaded_models:
         return jsonify({"error": "No models are loaded. Server misconfiguration."}), 500
 
@@ -133,6 +140,8 @@ def get_model_performace():
       
     }
     """
+   # if not loaded_models:
+    #    load_models()  # Ensure models are loaded when accessing home
     if not request.is_json:
         return jsonify({"error": "Request must be JSON"}), 400
 
@@ -168,6 +177,8 @@ def return_model_list():
     """
     API endpoint to return the list of available models.
     """
+    #if not loaded_models:
+     #   load_models()  # Ensure models are loaded when accessing home
     if not loaded_models:
         return jsonify({"error": "No models are loaded. Server misconfiguration."}), 500
 
@@ -176,8 +187,5 @@ def return_model_list():
 
 # --- Main execution block ---
 if __name__ == '__main__':
-    # Load the model when the application starts
-    load_models()
-    
     app.run(debug=False, host='0.0.0.0', port=5000)
 

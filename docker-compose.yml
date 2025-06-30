@@ -10,6 +10,9 @@ services:
     # we set up a volume to persist the models directory, as it is out of the container's context
     volumes:
       - ./models:/app/models 
+    environment:
+      - MODEL_PATH=/app/models/ # The path where the models are stored inside the container
+      
   # Define the Streamlit application service (Frontend)
   streamlit_app:
     build:

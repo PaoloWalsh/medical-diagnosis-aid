@@ -11,6 +11,23 @@ FLASK_API_URL = os.getenv("FLASK_API_URL", "http://localhost:5001")
 
 # --- Funzioni per chiamare l'API ---
 
+def handle_api_error(response):
+    """
+    Gestisce gli errori delle risposte API.
+    """
+    try:
+        response.raise_for_status()
+    except requests.exceptions.ConnectionError:
+        st.error(f"Errore di connessione all'API Flask. Assicurati che l'API sia in esecuzione su {FLASK_API_URL}")
+        return {"error": "Connessione all'API fallita."}
+    except requests.exceptions.HTTPError as e:
+        st.error(f"Errore HTTP: {e.response.status_code} - {e.response.json().get('error', 'Errore sconosciuto')}")
+        return {"error": e.response.json().get('error', 'Errore sconosciuto')}
+    except requests.exceptions.RequestException as e:
+        st.error(f"Errore durante la chiamata all'API: {e}")
+        return {"error": "Errore sconosciuto."}
+    return response.json()
+
 def get_available_models():
     """
     Recupera i modelli disponibili dall'endpoint /models della Flask API.
@@ -39,15 +56,8 @@ def predict_data(model_name, data):
     }
     try:
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
-        response.raise_for_status() # Lancia un'eccezione per codici di stato HTTP errati
-        return response.json()
-    except requests.exceptions.ConnectionError:
-        st.error(f"Errore di connessione all'API Flask. Assicurati che l'API sia in esecuzione su {FLASK_API_URL}")
-        return {"error": "Connessione all'API fallita."}
-    except requests.exceptions.HTTPError as e:
-        st.error(f"Errore HTTP durante la previsione: {e.response.status_code} - {e.response.json().get('error', 'Errore sconosciuto')}")
-        return {"error": e.response.json().get('error', 'Errore sconosciuto')}
-    except Exception as e:
+        return handle_api_error(response)
+    except requests.exceptions.RequestException as e:
         st.error(f"Errore durante la chiamata all'API /predict: {e}")
         return {"error": "Errore sconosciuto durante la previsione."}
 
@@ -60,15 +70,8 @@ def get_model_performance(model_name):
     payload = {"model_name": model_name}
     try:
         response = requests.post(endpoint, headers=headers, data=json.dumps(payload))
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.ConnectionError:
-        st.error(f"Errore di connessione all'API Flask. Assicurati che l'API sia in esecuzione su {FLASK_API_URL}")
-        return {"error": "Connessione all'API fallita."}
-    except requests.exceptions.HTTPError as e:
-        st.error(f"Errore HTTP durante il recupero delle performance: {e.response.status_code} - {e.response.json().get('error', 'Errore sconosciuto')}")
-        return {"error": e.response.json().get('error', 'Errore sconosciuto')}
-    except Exception as e:
+        return handle_api_error(response)
+    except requests.exceptions.RequestException as e:
         st.error(f"Errore durante la chiamata all'API /models: {e}")
         return {"error": "Errore sconosciuto durante il recupero delle performance."}
 
@@ -180,7 +183,7 @@ else:
     feature_values.append(blood_pressure_resting)
 
     # CHOLESTEROL
-    cholesterol = st.number_input("Colesterolo (mg/dl)", min_value=100.0, max_value=600.0, value=309.0, step=1.0, format="%.1f", key="cholesterol_input_num")
+    cholesterol = st.number_input("Colesterolo (mg/dl)", min_value=100.0, max_value=600.0, value=150.0, step=1.0, format="%.1f", key="cholesterol_input_num")
     feature_values.append(cholesterol)
 
     # MAX_HEART_RATE

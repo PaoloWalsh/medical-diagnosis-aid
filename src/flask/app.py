@@ -3,17 +3,17 @@ from flask import Flask, request, jsonify
 import numpy as np
 import os
 import onnxruntime as ort
-
 # Initialize the Flask application
 app = Flask(__name__)
 
 # Define the path to your pickled model file
-MODEL_PATH = 'models/'
-
+#MODEL_PATH = 'models/'
+MODEL_PATH = os.getenv('MODEL_PATH', 'models/')  
 MODEL_FILES = {
     'K-Nearest Neighbors': 'best_knn_model.onnx',
     'Logistic Regression': 'best_log_model.onnx',
 }
+
 MODEL_STATS = 'tuned_model_performance.csv'
 # Global variable to store the loaded model
 loaded_models = {}
@@ -27,9 +27,9 @@ def load_models():
     for save_name, model_name in MODEL_FILES.items():
         if os.path.exists(MODEL_PATH + model_name):
             try:
-                with open(MODEL_PATH + model_name, 'rb') as file:
+                with open(MODEL_PATH + model_name, 'rb') as _:
                     loaded_models[save_name] = ort.InferenceSession(MODEL_PATH + model_name)
-                print(f"Model '{save_name}' successfully loaded from {model_name}")
+                print(f"Model {save_name} successfully loaded from {model_name}")
             except (FileNotFoundError, IOError) as e:
                 print(f"Error loading model '{save_name}' from {model_name}: {e}")
                 # Do not stop the app, but log the error for this specific model
@@ -103,7 +103,6 @@ def predict():
         predictions = chosen_model.run([label_name], {input_name: input_array.astype(np.float32)})[0]
         probabilities = None  # ONNX models may not always provide probabilities
         
-        probabilities = None  # ONNX models may not always provide probabilities
         try:
             # Check if the model provides probabilities
             prob_output_name = chosen_model.get_outputs()[1].name  # Assuming the second output is probabilities

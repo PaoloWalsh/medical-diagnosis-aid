@@ -7,7 +7,6 @@ import onnxruntime as ort
 app = Flask(__name__)
 
 # Define the path to your pickled model file
-#MODEL_PATH = 'models/'
 MODEL_PATH = os.getenv('MODEL_PATH', 'models/')  
 MODEL_FILES = {
     'K-Nearest Neighbors': 'best_knn_model.onnx',
@@ -32,7 +31,6 @@ def load_models():
                 print(f"Model {save_name} successfully loaded from {model_name}")
             except (FileNotFoundError, IOError) as e:
                 print(f"Error loading model '{save_name}' from {model_name}: {e}")
-                # Do not stop the app, but log the error for this specific model
         else:
             print(f"Model file for '{save_name}' not found at {MODEL_PATH + model_name}. Skipping.")
     
@@ -51,8 +49,7 @@ def home():
     """
     Basic home route to confirm the server is running.
     """
-   # if not loaded_models:
-   #     load_models()  # Ensure models are loaded when accessing home
+  
     available_models = list(loaded_models.keys())
     return (
         f"Flask multi-model prediction backend is running!<br>"
@@ -72,10 +69,6 @@ def predict():
         "data": [[feature1_val1, feature2_val1, ...]]
     }
     """
-    ##if not loaded_models:
-    #    load_models()  # Ensure models are loaded when accessing home
-    if not loaded_models:
-        return jsonify({"error": "No models are loaded. Server misconfiguration."}), 500
 
     if not request.is_json:
         return jsonify({"error": "Request must be JSON"}), 400
@@ -140,8 +133,6 @@ def get_model_performace():
       
     }
     """
-   # if not loaded_models:
-    #    load_models()  # Ensure models are loaded when accessing home
     if not request.is_json:
         return jsonify({"error": "Request must be JSON"}), 400
 
@@ -177,8 +168,7 @@ def return_model_list():
     """
     API endpoint to return the list of available models.
     """
-    #if not loaded_models:
-     #   load_models()  # Ensure models are loaded when accessing home
+
     if not loaded_models:
         return jsonify({"error": "No models are loaded. Server misconfiguration."}), 500
 

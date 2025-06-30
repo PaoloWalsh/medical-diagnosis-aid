@@ -203,10 +203,12 @@ else:
 
                 if prediction_result and "error" not in prediction_result:
                     st.subheader("Risultati della Previsione:")
-                    st.success(f"Modello utilizzato: **{prediction_result.get('model_used')}**")
+                    st.write(f"Modello utilizzato: **{prediction_result.get('model_used')}**")
                     result = 'Sano' if prediction_result.get('predictions', ['N/A'])[0] == 0 else 'Malato'
-
-                    st.write(f"Previsione: Il paziente è **{result}**")
+                    if result == 'Sano':
+                        st.success(f"Previsione: Il paziente è **{result}**")
+                    else:
+                        st.error(f"Previsione: Il paziente è **{result}**")
 
                     if "probabilities" in prediction_result:
                         st.markdown("---")

@@ -10,8 +10,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code into the container
 COPY app.py .
-# COPY ../models/*.onnx .
-# COPY ../models/*.csv .
 # Expose the port on which the Flask app will run
 EXPOSE 5000
 

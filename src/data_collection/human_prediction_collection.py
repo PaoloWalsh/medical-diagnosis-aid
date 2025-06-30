@@ -37,9 +37,14 @@ if human_labels:
     labeled_df = df.iloc[:len(human_labels)].copy()
     labeled_df['human_prediction'] = human_labels
 
-    output_file = '../../data/heart_disease_human_prediction.csv'
-    labeled_df.to_csv(output_file, index=False)
+    try:
+        output_file = '../../data/heart_disease_human_prediction.csv'
+        labeled_df.to_csv(output_file, index=False)
+        print(f"\n✅ Done. {len(labeled_df)} rows saved to '{output_file}'.")
+    except FileNotFoundError as e:
+        print(f"\n Error: {e}. Please check the output file path.")
 
+    
     print(f"\n✅ Done. {len(labeled_df)} rows saved to '{output_file}'.")
 else:
     print("\n⚠️ No data labeled. Nothing saved.")

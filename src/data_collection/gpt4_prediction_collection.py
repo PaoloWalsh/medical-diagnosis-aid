@@ -33,10 +33,9 @@ for idx, row in df.iterrows():
         )
         message = response.choices[0].message.content.strip().lower()
         label = 1 if message.startswith('y') else 0
-    except Exception as e:
+    except OpenAI.error.OpenAIError as e:
         print(f"⚠️ Error on row {idx}: {e}")
-        label = None  # or handle however appropriate
-
+        label = None
     gpt_labels.append(label)
 
 # Save results

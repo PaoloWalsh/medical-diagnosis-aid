@@ -85,7 +85,7 @@ def predict():
     if chosen_model is None:
         return jsonify({
             "error": f"Model '{model_name}' not found or not loaded. Available models: {list(loaded_models.keys())}"
-        }), 404 # Not Found
+        }), 404 
 
     # Get the data for prediction
     input_data = request_data.get('data')
@@ -98,7 +98,6 @@ def predict():
         print(input_array)
 
         # Make prediction using the chosen model
-        # Use ONNX Runtime to run inference
         input_name = chosen_model.get_inputs()[0].name
         label_name = chosen_model.get_outputs()[0].name
         predictions = chosen_model.run([label_name], {input_name: input_array.astype(np.float32)})[0]
@@ -165,8 +164,6 @@ def get_model_performace():
     except IOError as e:
         return jsonify({"error": f"Error reading model performance file: {e}"}), 500
     
-
-    
 @app.route('/model_list', methods=['POST'])
 def return_model_list():
     """
@@ -182,7 +179,6 @@ def return_model_list():
 if __name__ == '__main__':
     # Load the model when the application starts
     load_models()
-    # Run the Flask app. debug=True allows for auto-reloading on code changes,
-    # but should be set to False in production.
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    
+    app.run(debug=False, host='0.0.0.0', port=5000)
 

@@ -7,12 +7,9 @@ services:
     ports:
       - "5001:5000"
     restart: always
-    # Aggiungi un volume per i modelli se vuoi montarli esternamente o persisterli.
-    # Questo è spesso più comodo che copiarli nell'immagine.
-    # Se decidi di usarlo, assicurati che app.py cerchi i modelli in /app/models.
+    # we set up a volume to persist the models directory, as it is out of the container's context
     volumes:
-      - ./models:/app/models # Questo monterà la tua cartella 'models' del progetto nella cartella '/app/models' del container
-
+      - ./models:/app/models 
   # Define the Streamlit application service (Frontend)
   streamlit_app:
     build:
@@ -21,9 +18,8 @@ services:
     ports:
       - "8501:8501"
     depends_on:
-      - flask_app # Assicura che il container Flask sia avviato prima di Streamlit
+      - flask_app # The Flask container has to be up before the Streamlit app starts
     restart: always
-    # Il backend Flask è disponibile all'interno della rete Docker con il nome del servizio 'flask_app'.
-    # La porta 5000 è quella interna del container Flask, non quella mappata sull'host (5001).
+    # The Flask backend is available within the Docker network using the service name 'flask_app'.
     environment:
       - FLASK_API_URL=http://flask_app:5000

@@ -21,6 +21,7 @@ Il sistema è containerizzato con Docker per garantire una facile installazione 
 ```
 medical-diagnosis-aid/
 ├── data/                   # Contiene i dataset (raw, puliti, predizioni esterne)
+├── docs/                   # Contiene la documentazione del progetto (specifiche, presentazione e report completo)
 ├── models/                 # Contiene i modelli addestrati (.onnx) e le metriche di performance
 ├── notebooks/              # Jupyter Notebooks per l'analisi, l'addestramento e la valutazione
 ├── plots/                  # Grafici e visualizzazioni salvate
@@ -165,3 +166,10 @@ Per eseguire i notebook localmente, è consigliabile creare un ambiente virtuale
     jupyter notebook
     ```
     Questo aprirà un'interfaccia nel tuo browser. Naviga fino alla cartella `notebooks/` per aprire ed eseguire i file `.ipynb`.
+
+## 📚 Documentazione
+
+La cartella `docs/` contiene la documentazione del progetto, in particolare:
+- `project_specifications.pdf` contiene le specifiche di progetto fornite dal professore
+- `project_report.pdf` contiene un report completto del progetto scritto in Latex in cui abbiamo descritto tutto il lavoro svolto e inserendo grafici e considerazioni
+- `project_presentation.pdf` contiene un breve presentazione che va a riassumere il report andando a concentrarsi sugli aspetti fondamentali del lavoro svolto

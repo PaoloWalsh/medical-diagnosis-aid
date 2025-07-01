@@ -60,7 +60,7 @@ Segui questi passaggi per mettere in funzione il progetto localmente.
 3.  **Avvia l'applicazione con Docker:**
     Il modo più semplice per avviare l'API è usare Docker Compose.
     ```sh
-    docker-compose up --build
+    docker compose up --build
     ```
     Questo comando costruirà l'immagine Docker e avvierà il container. L'API sarà disponibile all'indirizzo `http://localhost:5001`.
 

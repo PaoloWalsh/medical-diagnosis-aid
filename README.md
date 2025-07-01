@@ -11,7 +11,7 @@ Il sistema è containerizzato con Docker per garantire una facile installazione 
     -   K-Nearest Neighbors (KNN)
     -   Logistic Regression
 -   **Valutazione Approfondita**: Valutazione dei modelli tramite metriche come Accuracy, Recall, ROC AUC e matrici di confusione.
--   **Interpretabilità**: Analisi dell'importanza delle feature tramite i coefficienti dei modelli lineari e SHAP (SHapley Additive exPlanations).
+-   **Interpretabilità**: Analisi dell'importanza delle feature tramite SHAP (SHapley Additive exPlanations).
 -   **API RESTful**: Un'API basata su Flask per servire i modelli addestrati (in formato ONNX) e ottenere predizioni.
 -   **Containerizzazione**: L'intera applicazione è containerizzata con Docker per una facile distribuzione e portabilità.
 -   **Analisi Comparativa**: Confronto delle performance dei modelli con predizioni generate da un LLM (GPT) e da un operatore umano.
@@ -55,7 +55,7 @@ Segui questi passaggi per mettere in funzione il progetto localmente.
     -   **Heart Disease Data**: [https://www.kaggle.com/datasets/redwankarimsony/heart-disease-data](https://www.kaggle.com/datasets/redwankarimsony/heart-disease-data)
         -   Salva il file come `data/heart_disease_uci.csv`.
     -   *(Nota: il notebook di pulizia dati genererà `heart_disease_clean.csv`)*
-
+  
 3.  **Avvia l'applicazione con Docker:**
     Il modo più semplice per avviare l'API è usare Docker Compose.
     ```sh
@@ -122,7 +122,7 @@ curl -X POST http://localhost:5001/predict \
              ]
          }'
 ```
-*(Nota: il vettore `data` deve contenere 23 feature, corrispondenti ai dati dopo il one-hot encoding).*
+*(Nota: il vettore `data` deve contenere 25 feature, corrispondenti ai dati dopo il one-hot encoding).*
 
 **Risposta:**
 ```json

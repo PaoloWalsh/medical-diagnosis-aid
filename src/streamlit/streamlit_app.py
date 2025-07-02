@@ -30,7 +30,7 @@ def handle_api_error(response):
 
 def get_available_models():
     """
-    Recupera i modelli disponibili dall'endpoint /models della Flask API.
+    Recupera i modelli disponibili dall'endpoint /models_list della Flask API.
     """
     try:
         response = requests.post(f"{FLASK_API_URL}/model_list", timeout=5)

@@ -19,7 +19,7 @@ loaded_models = {}
 # --- Model Loading Function ---
 def load_models():
     """
-    Loads the scikit-learn model from the specified pickle file.
+    Loads the scikit-learn model from the specified onnx file.
     This function will be called once when the Flask app starts.
     """
     
